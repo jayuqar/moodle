@@ -336,6 +336,8 @@ class core_renderer extends \core_renderer {
      * @return string the HTML to be output.
      */
     public function block(block_contents $bc, $region) {
+        global $CFG;
+
         $bc = clone($bc); // Avoid messing up the object passed in.
         if (empty($bc->blockinstanceid) || !strip_tags($bc->title)) {
             $bc->collapsible = block_contents::NOT_HIDEABLE;
@@ -353,6 +355,10 @@ class core_renderer extends \core_renderer {
         $context->arialabel = $bc->arialabel;
         $context->ariarole = !empty($bc->attributes['role']) ? $bc->attributes['role'] : 'complementary';
         $context->type = $bc->attributes['data-block'];
+        $context->additionnalcssclasses = "";
+        if (!empty($CFG->block_html_allowcssclasses)) {
+            $context->additionnalcssclasses = str_replace('block_'. $context->type. '  block', '' , $bc->attributes['class']);
+        }
         $context->title = $bc->title;
         $context->content = $bc->content;
         $context->annotation = $bc->annotation;
